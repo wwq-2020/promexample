@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  prom:
+    image: prom/prometheus:latest
+    container_name: prom
+    networks: 
+      - prom
+    depends_on:
+      - consul   
+    command: ["--config.file","/etc/prometheus/prometheus.yml"]
+    volumes:
+      - $PWD:/etc/prometheus/
+  consul:
+    image: consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+    networks: 
+      - prom
+    command: ["consul", "agent", "-dev","-client","0.0.0.0"]    
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    networks: 
+      - prom
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prom
+
+  app:
+    build:
+      context: ./app
+    networks: 
+      - prom
+    ports:
+      - "9001:9001"
+    depends_on:
+      - consul
+
+
+
+networks:
+  prom:
