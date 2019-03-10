@@ -1,0 +1,8 @@
+groups:
+- name: test-rule
+  rules:
+  - alert: "延时报警"
+    expr: rpc_durations_seconds{service="test",quantile="0.9"} > 1
+    for: 1s
+    labels:
+      severity: warning

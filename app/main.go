@@ -104,6 +104,9 @@ func startServer() {
 		io.WriteString(w, "hello world")
 	})
 	mux.Handle("/metrics", promhttp.Handler())
+	mux.HandleFunc("/alert", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("alerting=======================")
+	})
 	server = &http.Server{Addr: fmt.Sprintf(":%d", port), Handler: mux}
 
 	go func() {
